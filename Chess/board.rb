@@ -45,8 +45,19 @@ class Board
         opposing_pieces << piece if !piece.empty? && piece.color != color
       end
     end
-    opposing_pieces.each { |piece| puts piece.symbol }
     opposing_pieces.any? { |piece| piece.moves.include?(king) }
+  end
+
+  def checkmate?(color)
+    in_check?(color)
+    @grid.each do |row|
+      row.eachdo |piece|
+        if !piece.empty? && piece.color == color
+          return false if piece.valid_moves.empty?
+        end
+      end
+    end
+    true 
   end
 
   private
