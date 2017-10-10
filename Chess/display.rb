@@ -5,7 +5,7 @@ require_relative 'cursor'
 
 class Display
   def initialize
-    @board = Board.new
+    @board = Board.create_new_board
     @cursor = Cursor.new([0,0], @board)
 
     while true

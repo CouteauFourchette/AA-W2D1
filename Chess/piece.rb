@@ -16,6 +16,10 @@ class Piece
     []
   end
 
+  def move_into_check?(end_pos)
+    
+  end
+
   def to_s
     'Undefined'
   end

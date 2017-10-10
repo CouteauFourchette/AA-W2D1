@@ -2,11 +2,17 @@ require_relative 'piece'
 
 class Board
   attr_reader :grid
-  def initialize
-    @grid = Array.new(8){Array.new(8, NullPiece.instance)}
-    set_up
+  def initialize(grid = Array.new(8){Array.new(8)})
+    @grid = grid
   end
 
+
+
+
+  def dup
+    new_grid = deep_dup(@grid)
+    Board.new(new_grid)
+  end
 
   def inside_board?(pos)
     x,y = pos
@@ -60,7 +66,14 @@ class Board
     true
   end
 
-  private
+  def self.create_new_board
+    new_board = Board.new
+    new_board.set_up
+    new_board
+  end
+
+
+
   def set_up
     pawns = ([1]*8 + [6]*8).zip((0..7).to_a*2)
     rooks = [[0,7],[7,0],[0,0],[7,7]]
@@ -95,6 +108,14 @@ class Board
 
       end
     end
+  end
+
+  private
+
+  def deep_dup(arr)
+    return arr if arr.is_a?(NullPiece)
+    return arr.dup if !arr.is_a?(Array)
+    arr.map{|el| deep_dup(el)}
   end
 
 
