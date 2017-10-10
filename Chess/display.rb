@@ -24,13 +24,19 @@ class Display
       (0..7).each do |j|
         e = @board[[i,j]]
         if @cursor.cursor_pos == [i,j]
+
           if @cursor.selected
-            print !e.empty? ? " #{e.to_s.colorize(:blue)}" : ' #'.colorize(:blue)
+            sym = !e.empty? ? "#{e.to_s.colorize(:green)} " : '♢ '.colorize(:green)
           else
-            print !e.empty? ? " #{e.to_s.colorize(:red)}" : ' #'.colorize(:red)
+            sym = !e.empty? ? "#{e.to_s.colorize(:red)} ".blink : '♢ '.colorize(:red)
           end
         else
-          print !e.empty? ? " #{e.to_s}" : ' #'
+            sym = !e.empty? ? "#{e.to_s} " : '  '
+        end
+        if (i % 2 == 0 && j % 2 == 0) || (i % 2 != 0 && j % 2 != 0)
+          print sym.on_light_blue
+        else
+          print sym
         end
       end
       puts
