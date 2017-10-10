@@ -2,11 +2,14 @@ require 'singleton'
 require_relative 'move_modules'
 
 class Piece
-  attr_reader :symbol, :position
+  attr_reader :symbol
+  attr_accessor :color, :position
+
   def initialize(board = nil, position = nil)
     @board = board
     @position = position
     @symbol = :empty
+    @color = nil
   end
 
   def to_s
@@ -25,8 +28,12 @@ class King < Piece
     @symbol = :king
   end
 
+  def move_diffs
+    [0,1,-1].permutation(2).to_a + [[1,1],[-1,-1]]
+  end
+
   def to_s
-    '♔'
+    @color == :white ? '♔' : '♚'
   end
 end
 
@@ -37,9 +44,14 @@ class Knight < Piece
     @symbol = :knight
   end
 
-  def to_s
-    '♘'
+  def move_diffs
+   [[-1, 2],[-1, -2],[1, 2],[1, -2],[2, -1],[2, 1],[-2, -1],[-2, 1]]
   end
+
+  def to_s
+    @color == :white ? '♘' : '♞'
+  end
+
 end
 
 class Bishop < Piece
@@ -50,7 +62,7 @@ class Bishop < Piece
   end
 
   def to_s
-    '♗'
+    @color == :white ? '♗' : '♝'
   end
 
   def move_dirs
@@ -66,7 +78,7 @@ class Rook < Piece
   end
 
   def to_s
-    '♖'
+    @color == :white ? '♖' : '♜'
   end
 
   def move_dirs
@@ -82,7 +94,7 @@ class Queen < Piece
   end
 
   def to_s
-    '♕'
+    @color == :white ? '♕' : '♛'
   end
 
   def move_dirs
@@ -97,10 +109,11 @@ class Pawn < Piece
   end
 
   def to_s
-    '♙'
+    @color == :white ? '♙' : '♟'
   end
 end
 
 class NullPiece < Piece
   include Singleton
+  @color = :empty
 end
