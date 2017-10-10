@@ -49,15 +49,15 @@ class Board
   end
 
   def checkmate?(color)
-    in_check?(color)
+    return false unless in_check?(color)
     @grid.each do |row|
-      row.eachdo |piece|
+      row.each do |piece|
         if !piece.empty? && piece.color == color
-          return false if piece.valid_moves.empty?
+          return false unless piece.valid_moves.empty?
         end
       end
     end
-    true 
+    true
   end
 
   private
