@@ -15,13 +15,14 @@ class Board
   end
 
   def move_piece(start_pos, end_pos)
-    unless self[start_pos].empty?
+    if self[start_pos].empty?
       raise ArgumentError.new("No piece at that position")
     end
     unless inside_board?(end_pos)
       raise ArgumentError.new("End position outside board")
     end
     self[end_pos] = self[start_pos]
+    self[end_pos].position = end_pos
     self[start_pos] = NullPiece.instance
   end
 
@@ -33,6 +34,19 @@ class Board
   def [](pos)
     x, y = pos
     @grid[x][y]
+  end
+
+  def in_check?(color)
+    king = []
+    opposing_pieces = []
+    @grid.each_with_index do |row, i|
+      row.each_with_index do |piece, j|
+        king = [i,j] if piece.symbol == :king && piece.color == color
+        opposing_pieces << piece if !piece.empty? && piece.color != color
+      end
+    end
+    opposing_pieces.each { |piece| puts piece.symbol }
+    opposing_pieces.any? { |piece| piece.moves.include?(king) }
   end
 
   private
@@ -62,8 +76,15 @@ class Board
         else
           self[pos] = NullPiece.instance
         end
+
+        #Color the pieces
+        unless self[pos].empty?
+          (i == 0 || i == 1) ? self[pos].color = :white : self[pos].color = :black
+        end
+
       end
     end
   end
+
 
 end
