@@ -1,5 +1,7 @@
 require_relative 'piece'
 
+require_relative 'display' ###TO BE REMOVED
+
 class Board
   attr_reader :grid
   def initialize(grid = Array.new(8){Array.new(8)})
@@ -11,7 +13,13 @@ class Board
 
   def dup
     new_grid = deep_dup(@grid)
-    Board.new(new_grid)
+    new_board = Board.new(new_grid)
+    new_board.grid.each do |row|
+      row.each do |piece|
+        piece.board = new_board
+      end
+    end
+    new_board
   end
 
   def inside_board?(pos)
@@ -32,6 +40,13 @@ class Board
     self[start_pos] = NullPiece.instance
   end
 
+  ######TO BE REMOVED############
+  def display_board
+    display = Display.new(self)
+    display.render_no_cursor
+    nil
+  end
+
   def []=(pos, value)
     x, y = pos
     @grid[x][y] = value
@@ -50,6 +65,11 @@ class Board
         king = [i,j] if piece.symbol == :king && piece.color == color
         opposing_pieces << piece if !piece.empty? && piece.color != color
       end
+    end
+    puts king
+    opposing_pieces.each do |piece|
+      puts piece
+      puts piece.moves.inspect
     end
     opposing_pieces.any? { |piece| piece.moves.include?(king) }
   end

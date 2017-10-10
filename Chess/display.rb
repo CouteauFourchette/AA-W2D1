@@ -4,17 +4,18 @@ require_relative 'cursor'
 
 
 class Display
-  def initialize
-    @board = Board.create_new_board
-    @cursor = Cursor.new([0,0], @board)
+  def initialize(board = Board.create_new_board)
+    @board = board
+    puts board
+    # @cursor = Cursor.new([0,0], @board)
 
-    while true
-      render
-      pos = @cursor.get_input
-      if pos && !@board[pos].is_a?(NullPiece)
-        @cursor.toggle_selected
-      end
-    end
+    # while true
+    #   render
+    #   pos = @cursor.get_input
+    #   if pos && !@board[pos].is_a?(NullPiece)
+    #     @cursor.toggle_selected
+    #   end
+    # end
 
   end
 
@@ -43,8 +44,25 @@ class Display
     end
   end
 
+## TO BE REMOVED
+  def render_no_cursor
+
+    (0..7).each do |i|
+      (0..7).each do |j|
+        e = @board[[i,j]]
+        sym = !e.empty? ? "#{e.to_s} " : '  '
+        if (i % 2 == 0 && j % 2 == 0) || (i % 2 != 0 && j % 2 != 0)
+          print sym.on_light_blue
+        else
+          print sym
+        end
+      end
+      puts
+    end
+  end
+
 
 
 end
 
-d = Display.new
+# d = Display.new
