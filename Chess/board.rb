@@ -1,7 +1,5 @@
 require_relative 'piece'
 
-require_relative 'display' ###TO BE REMOVED
-
 class Board
   attr_reader :grid
   def initialize(grid = Array.new(8){Array.new(8)})
@@ -35,16 +33,17 @@ class Board
     unless inside_board?(end_pos)
       raise ArgumentError.new("End position outside board")
     end
-    self[end_pos] = self[start_pos]
-    self[end_pos].position = end_pos
-    self[start_pos] = NullPiece.instance
-  end
+    unless self[start_pos].valid_moves.include?(end_pos)
+      raise ArgumentError.new("Invalid move")
+    end
+    if self[start_pos].move_into_check?(end_pos)
+      raise ArgumentError.new("Moving into check")
+    end
 
-  ######TO BE REMOVED############
-  def display_board
-    display = Display.new(self)
-    display.render_no_cursor
-    nil
+    self[end_pos] = self[start_pos].dup
+    self[start_pos] = NullPiece.instance
+    self[end_pos].position = end_pos
+
   end
 
   def []=(pos, value)
@@ -65,11 +64,6 @@ class Board
         king = [i,j] if piece.symbol == :king && piece.color == color
         opposing_pieces << piece if !piece.empty? && piece.color != color
       end
-    end
-    puts king
-    opposing_pieces.each do |piece|
-      puts piece
-      puts piece.moves.inspect
     end
     opposing_pieces.any? { |piece| piece.moves.include?(king) }
   end
