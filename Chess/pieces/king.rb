@@ -24,7 +24,8 @@ class King < Piece
   end
 
   def castle
-    return [] if @moved
+    return [] if @moved || @board.in_check?(@color)
+
     left = (1...@position[1]).all? do |i|
       @board[[@position[0],i]].empty?
     end
