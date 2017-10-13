@@ -8,7 +8,6 @@ class HumanPlayer
   def get_input
     begin
       @cursor.get_input
-
     rescue
       retry
     end

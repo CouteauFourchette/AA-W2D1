@@ -6,9 +6,6 @@ class Board
     @grid = grid
   end
 
-
-
-
   def dup
     new_grid = deep_dup(@grid)
     new_board = Board.new(new_grid)
@@ -43,7 +40,7 @@ class Board
     self[end_pos] = self[start_pos].dup
     self[start_pos] = NullPiece.instance
     self[end_pos].position = end_pos
-
+    self[end_pos]
   end
 
   def []=(pos, value)

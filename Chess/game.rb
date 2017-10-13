@@ -1,11 +1,3 @@
-
-# while true
-#   render
-#   pos = @cursor.get_input
-#   if pos && !@board[pos].is_a?(NullPiece)
-#     @cursor.toggle_selected
-#   end
-# end
 require_relative 'human_player'
 require_relative 'display'
 require_relative 'board'
@@ -27,33 +19,34 @@ class Game
   def play
     @display.render
 
-    until @board.checkmate?(:black) || @board.checkmate?(:white)
+    until @board.checkmate?(@current_player.color)
       play_turn
     end
     puts "WINNNER IS #{@current_player.name}"
   end
 
   def play_turn
-
-
+    begin
     @display.render
     pos = @current_player.get_input
 
     if pos != nil && !@cursor.selected.empty?
-      @board.move_piece(@cursor.selected, pos)
+      piece = @board.move_piece(@cursor.selected, pos)
+      @display.update_history(piece, pos)
       @cursor.selected = []
       switch_player
       @display.render
-
     elsif pos!=nil && @board[pos].color == @current_player.color && @cursor.selected.empty?
       @cursor.selected = pos
     end
-
+    rescue ArgumentError
+      retry
+    end
   end
 
 end
 
 if __FILE__ == $PROGRAM_NAME
-  game = Game.new('a', 'b')
+  game = Game.new('Player1', 'Player2')
   game.play
 end

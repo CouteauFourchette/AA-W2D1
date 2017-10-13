@@ -46,10 +46,6 @@ class Cursor
     handle_key(key)
   end
 
-  # def toggle_selected
-  #   @selected = @selected ? false : true
-  # end
-
   private
 
   def read_char
