@@ -8,8 +8,8 @@ class History
   end
 
   def add(item)
-    if @log[0] && @log[0].length < 5
-      @log[0] += ' ' + item
+    if @log[0] && @log[0].length < 6
+      @log[0] += '  ' + item
     else
       @log.unshift(item)
     end

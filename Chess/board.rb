@@ -1,9 +1,11 @@
 require_relative 'pieces'
+require_relative 'History'
 
 class Board
   attr_reader :grid
   def initialize(grid = Array.new(8){Array.new(8)})
     @grid = grid
+    @history = History.instance
   end
 
   def dup
@@ -45,19 +47,32 @@ class Board
       if end_pos[1] == 7
         king_pos = [start_pos[0], start_pos[1] + 2]
         rook_pos = [end_pos[0], end_pos[1] - 2]
+        @history.add('O-O')
       else
         king_pos = [start_pos[0], start_pos[1] - 2]
         rook_pos = [end_pos[0], end_pos[1] + 3]
+        @history.add('O-O-O')
       end
       self[king_pos] = self[end_pos].dup
       self[king_pos].position = king_pos
       self[end_pos] = NullPiece.instance
-      self[rook_pos] = old_piece
+      self[rook_pos] = old_piece.dup
       old_piece.position = rook_pos
+
+    else
+      update_history(self[end_pos], end_pos)
     ensure
       self[start_pos] = NullPiece.instance
     end
+
     self[end_pos]
+  end
+
+  def update_history(piece, finish)
+    column_notation = ['a','b','c','d','e','f','g','h']
+    notation = piece.to_s
+    notation += ' ' + column_notation[finish[1]] + (8-finish[0]).to_s
+    @history.add(notation)
   end
 
   def []=(pos, value)

@@ -42,10 +42,4 @@ class Display
     end
   end
 
-  def update_history(piece, finish)
-    column_notation = ['a','b','c','d','e','f','g','h']
-    notation = piece.to_s
-    notation += ' ' + column_notation[finish[1]] + (8-finish[0]).to_s
-    @history.add(notation)
-  end
 end
