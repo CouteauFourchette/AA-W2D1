@@ -1,12 +1,13 @@
 require 'colorize'
 require_relative 'cursor'
+require_relative 'history'
 require 'byebug'
 
 class Display
   def initialize(board = Board.create_new_board, cursor)
     @board = board
     @cursor = cursor
-    @history = []
+    @history = History.instance
   end
 
   def render
@@ -45,11 +46,6 @@ class Display
     column_notation = ['a','b','c','d','e','f','g','h']
     notation = piece.to_s
     notation += ' ' + column_notation[finish[1]] + (8-finish[0]).to_s
-    
-    if @history.first && @history.first.length < 5
-      @history[0] += ' ' + notation
-    else
-      @history.unshift(notation)
-    end
+    @history.add(notation)
   end
 end
