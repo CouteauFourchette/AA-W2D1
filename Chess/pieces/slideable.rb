@@ -20,11 +20,13 @@ module Slideable
       line = []
       until !@board.inside_board?(new_pos)
         line << new_pos if (@board[new_pos].color != @color && @board.inside_board?(new_pos))
+
         break if !@board[new_pos].empty?
         new_pos = [new_pos[0] + diff[0], new_pos[1] + diff[1]]
       end
       possible_moves << line unless line.empty?
     end
+    p possible_moves
     possible_moves.flatten(1)
   end
 end

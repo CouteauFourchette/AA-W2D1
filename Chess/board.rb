@@ -31,15 +31,22 @@ class Board
       raise ArgumentError.new("End position outside board")
     end
     unless self[start_pos].valid_moves.include?(end_pos)
+      puts "invalid move #{self[start_pos].valid_moves}"
       raise ArgumentError.new("Invalid move")
     end
     if self[start_pos].move_into_check?(end_pos)
       raise ArgumentError.new("Moving into check")
     end
 
-    self[end_pos] = self[start_pos].dup
-    self[start_pos] = NullPiece.instance
-    self[end_pos].position = end_pos
+    begin
+      old_piece = self[end_pos].dup unless self[end_pos].empty?
+      self[end_pos] = self[start_pos].dup
+      self[start_pos].position = end_pos
+    rescue CastleException
+      self[start_pos] = old_piece
+    else
+      self[start_pos] = NullPiece.instance
+    end
     self[end_pos]
   end
 
@@ -83,8 +90,6 @@ class Board
     new_board
   end
 
-
-
   def set_up
     pawns = ([1]*8 + [6]*8).zip((0..7).to_a*2)
     rooks = [[0,7],[7,0],[0,0],[7,7]]
@@ -100,10 +105,10 @@ class Board
           self[pos] = Pawn.new(self, pos)
         when rooks.include?(pos)
           self[pos] = Rook.new(self, pos)
-        when knights.include?(pos)
-          self[pos] = Knight.new(self, pos)
-        when bishops.include?(pos)
-          self[pos] = Bishop.new(self, pos)
+        # when knights.include?(pos)
+        #   self[pos] = Knight.new(self, pos)
+        # when bishops.include?(pos)
+        #   self[pos] = Bishop.new(self, pos)
         when queens.include?(pos)
           self[pos] = Queen.new(self, pos)
         when kings.include?(pos)
