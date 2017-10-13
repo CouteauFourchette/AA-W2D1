@@ -41,7 +41,7 @@ class Board
     begin
       old_piece = self[end_pos].dup unless self[end_pos].empty?
       self[end_pos] = self[start_pos].dup
-      self[start_pos].position = end_pos
+      self[end_pos].position = end_pos
     rescue CastleException
       self[start_pos] = old_piece
     else
