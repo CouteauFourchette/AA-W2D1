@@ -14,7 +14,7 @@ class King < Piece
   end
 
   def position=(pos)
-    raise CastleException if !@moved && (pos == [0,0] || pos == [0,7])
+    raise CastleException if !@moved && (pos == [@position[0],0] || pos == [@position[0],7])
     @moved = true
     @position = pos
   end
@@ -26,33 +26,32 @@ class King < Piece
   def castle
     return [] if @moved
     left = (1...@position[1]).all? do |i|
-      @board[[0,i]].empty?
+      @board[[@position[0],i]].empty?
     end
 
     if left
-      rook = @board[[0,0]]
+      rook = @board[[@position[0],0]]
       left = (rook.symbol == :rook && !rook.moved)
     end
 
     right = (@position[1]+1...7).all? do |i|
-      @board[[0,i]].empty?
+      @board[[@position[0],i]].empty?
     end
 
     if right
-      rook = @board[[0,7]]
+      rook = @board[[@position[0],7]]
       right = (rook.symbol == :rook && !rook.moved)
     end
 
     moves = []
-    moves += [0,0] if left
-    moves += [0,7] if right
+    moves << [@position[0],0] if left
+    moves << [@position[0],7] if right
 
     moves
   end
 
   def valid_moves
-    normal_moves = super.dup
-    normal_moves << castle
+    super + castle
   end
 
   def to_s

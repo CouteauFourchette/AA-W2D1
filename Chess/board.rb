@@ -43,8 +43,19 @@ class Board
       self[end_pos] = self[start_pos].dup
       self[end_pos].position = end_pos
     rescue CastleException
-      self[start_pos] = old_piece
-    else
+      if end_pos[1] == 7
+        king_pos = [start_pos[0], start_pos[1] + 2]
+        rook_pos = [end_pos[0], end_pos[1] - 2]
+      else
+        king_pos = [start_pos[0], start_pos[1] - 2]
+        rook_pos = [end_pos[0], end_pos[1] + 3]
+      end
+      self[king_pos] = self[end_pos].dup
+      self[king_pos].position = king_pos
+      self[end_pos] = NullPiece.instance
+      self[rook_pos] = old_piece
+      old_piece.position = rook_pos
+    ensure
       self[start_pos] = NullPiece.instance
     end
     self[end_pos]
