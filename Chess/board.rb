@@ -31,7 +31,6 @@ class Board
       raise ArgumentError.new("End position outside board")
     end
     unless self[start_pos].valid_moves.include?(end_pos)
-      puts "invalid move #{self[start_pos].valid_moves}"
       raise ArgumentError.new("Invalid move")
     end
     if self[start_pos].move_into_check?(end_pos)
@@ -116,10 +115,10 @@ class Board
           self[pos] = Pawn.new(self, pos)
         when rooks.include?(pos)
           self[pos] = Rook.new(self, pos)
-        # when knights.include?(pos)
-        #   self[pos] = Knight.new(self, pos)
-        # when bishops.include?(pos)
-        #   self[pos] = Bishop.new(self, pos)
+        when knights.include?(pos)
+          self[pos] = Knight.new(self, pos)
+        when bishops.include?(pos)
+          self[pos] = Bishop.new(self, pos)
         when queens.include?(pos)
           self[pos] = Queen.new(self, pos)
         when kings.include?(pos)

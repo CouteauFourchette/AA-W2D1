@@ -2,9 +2,6 @@ require_relative 'piece'
 require_relative 'stepable'
 
 
-class CastleException < StandardError
-end
-
 class King < Piece
   include Stepable
   def initialize(*)
@@ -58,4 +55,8 @@ class King < Piece
   def to_s
     @color == :white ? '♔' : '♚'
   end
+end
+
+
+class CastleException < StandardError
 end
