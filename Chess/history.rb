@@ -18,6 +18,7 @@ class History
       @log.unshift("#{@line_count}.#{item}")
       @line_count += 1
     end
+    print_as_PGN
   end
 
   def takes(piece, end_pos, begin_board, end_board)
@@ -80,6 +81,20 @@ class History
 
   def [](item)
     @log[item]
+  end
+
+  def print_as_PGN
+    pgn_lines = []
+    symbols = { '♔ '=> 'K', '♚ '=> 'K', '♗ '=> 'B', '♝ '=> 'B', '♘ '=> 'N', '♞ '=> 'N', '♙ '=> ' ', '♟ '=> ' ', '♕ '=> 'Q', '♛ '=> 'Q', '♖ '=> 'R', '♜ '=> 'R' }
+    @log.each do |line|
+      symbols.each do |key, val|
+        if line.include?(key)
+          line = line.sub(key, val)
+        end
+      end
+      pgn_lines << line
+    end
+    puts pgn_lines.reverse
   end
 
 end
