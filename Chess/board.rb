@@ -40,6 +40,7 @@ class Board
     end
 
     begin
+      attack = self[end_pos].empty? ? '  ' : ' x'
       old_piece = self[end_pos].dup unless self[end_pos].empty?
       self[end_pos] = self[start_pos].dup
       self[end_pos].position = end_pos
@@ -60,7 +61,7 @@ class Board
       old_piece.position = rook_pos
 
     else
-      update_history(self[end_pos], end_pos)
+      update_history(self[end_pos], end_pos, attack)
     ensure
       self[start_pos] = NullPiece.instance
     end
@@ -68,10 +69,10 @@ class Board
     self[end_pos]
   end
 
-  def update_history(piece, finish)
+  def update_history(piece, finish, attack)
     column_notation = ['a','b','c','d','e','f','g','h']
     notation = piece.to_s
-    notation += ' ' + column_notation[finish[1]] + (8-finish[0]).to_s
+    notation += attack + column_notation[finish[1]] + (8-finish[0]).to_s
     @history.add(notation)
   end
 
