@@ -5,9 +5,9 @@ require_relative 'board'
 class Game
   def initialize(name1, name2)
     @board = Board.create_new_board
-    @cursor = Cursor.new([0,0], @board)
-    @player1 = HumanPlayer.new(name1, :white, @cursor)
-    @player2 = HumanPlayer.new(name2, :black, @cursor)
+    @cursor = Cursor.new([6,4], @board)
+    @player2 = HumanPlayer.new(name1, :white, @cursor)
+    @player1 = HumanPlayer.new(name2, :black, @cursor)
     @current_player = @player1
     @display = Display.new(@board, @cursor)
   end

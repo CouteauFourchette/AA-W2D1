@@ -2,14 +2,22 @@ require "io/console"
 
 KEYMAP = {
   " " => :space,
-  "h" => :left,
-  "j" => :down,
-  "k" => :up,
-  "l" => :right,
-  "w" => :up,
-  "a" => :left,
-  "s" => :down,
-  "d" => :right,
+  "1" => :one,
+  "2" => :two,
+  "3" => :three,
+  "4" => :four,
+  "5" => :five,
+  "6" => :six,
+  "7" => :seven,
+  "8" => :eight,
+  "a" => :a,
+  "b" => :b,
+  "c" => :c,
+  "d" => :d,
+  "e" => :e,
+  "f" => :f,
+  "g" => :g,
+  "h" => :h,
   "\t" => :tab,
   "\r" => :return,
   "\n" => :newline,
@@ -79,6 +87,11 @@ class Cursor
 
   def handle_key(key)
     key = key.to_sym
+    file_system = [:a, :b, :c, :d, :e, :f, :g, :h]
+    rank_system = [:one, :two, :three, :four, :five, :six, :seven, :eight]
+    file_hash = Hash[file_system.zip (0...file_system.size)]
+    rank_hash = Hash[rank_system.zip (0...rank_system.size)]
+
     case
     when key == :escape
       @selected = []
@@ -87,6 +100,12 @@ class Cursor
       @cursor_pos
     when key ==:space
       @cursor_pos
+    when file_hash.include?(key)
+      set_pos([@cursor_pos[0], file_hash[key]])
+      nil
+    when rank_hash.include?(key)
+      set_pos([7-rank_hash[key], @cursor_pos[1]])
+      nil
     when MOVES.include?(key)
       update_pos(MOVES[key])
       nil
@@ -102,5 +121,9 @@ class Cursor
       @cursor_pos = new_pos
       return new_pos
     end
+  end
+
+  def set_pos(pos)
+    @cursor_pos = pos
   end
 end
