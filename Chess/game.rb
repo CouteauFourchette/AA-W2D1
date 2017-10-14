@@ -32,7 +32,6 @@ class Game
 
     if pos != nil && !@cursor.selected.empty?
       piece = @board.move_piece(@cursor.selected, pos)
-      @display.update_history(piece, pos)
       @cursor.selected = []
       switch_player
       @display.render

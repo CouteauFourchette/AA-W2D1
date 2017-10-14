@@ -1,9 +1,11 @@
 require_relative 'pieces'
+require_relative 'History'
 
 class Board
   attr_reader :grid
   def initialize(grid = Array.new(8){Array.new(8)})
     @grid = grid
+    @history = History.instance
   end
 
   def dup
@@ -38,25 +40,40 @@ class Board
     end
 
     begin
+      attack = !self[end_pos].empty?
+      initial_board = dup
+      start_piece = self[start_pos].dup
       old_piece = self[end_pos].dup unless self[end_pos].empty?
       self[end_pos] = self[start_pos].dup
       self[end_pos].position = end_pos
+
     rescue CastleException
       if end_pos[1] == 7
         king_pos = [start_pos[0], start_pos[1] + 2]
         rook_pos = [end_pos[0], end_pos[1] - 2]
+        @history.castling(:kingside)
       else
         king_pos = [start_pos[0], start_pos[1] - 2]
         rook_pos = [end_pos[0], end_pos[1] + 3]
+        @history.castling(:queenside)
       end
       self[king_pos] = self[end_pos].dup
       self[king_pos].position = king_pos
       self[end_pos] = NullPiece.instance
-      self[rook_pos] = old_piece
+      self[rook_pos] = old_piece.dup
       old_piece.position = rook_pos
+    else
+
+      if attack
+        @history.takes(start_piece, end_pos, initial_board, self)
+      else
+        @history.moves(start_piece, end_pos, initial_board, self)
+      end
+
     ensure
       self[start_pos] = NullPiece.instance
     end
+
     self[end_pos]
   end
 

@@ -26,7 +26,6 @@ module Slideable
       end
       possible_moves << line unless line.empty?
     end
-    p possible_moves
     possible_moves.flatten(1)
   end
 end
