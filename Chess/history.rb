@@ -1,5 +1,5 @@
 require 'singleton'
-require 'Date'
+require_relative 'pgn'
 
 class History
   include Singleton
@@ -75,27 +75,8 @@ class History
   end
 
   def save_as_PGN
-    pgn_lines = []
-    symbols = { '♔ '=> 'K', '♚ '=> 'K', '♗ '=> 'B', '♝ '=> 'B', '♘ '=> 'N', '♞ '=> 'N', '♙ '=> ' ', '♟ '=> ' ', '♕ '=> 'Q', '♛ '=> 'Q', '♖ '=> 'R', '♜ '=> 'R' }
-    @log.each do |line|
-      symbols.each do |key, val|
-        if line.include?(key)
-          line = line.sub(key, val)
-        end
-      end
-      pgn_lines << line
-    end
-    file = File.open("games/#{Date.today}-#{Date.today.ctime}.pgn", 'w')
-    file.puts('[Result "*"]')
-    file.puts('[Date "2017.10.14"]')
-    file.puts('[Round "1"]')
-    file.puts('[Event "?"]')
-    file.puts('[Black "?"]')
-    file.puts('[Site "Earth"]')
-    file.puts('[White "?"]')
-    file.puts
-    pgn_lines.reverse.each { |pgn| file.puts(pgn) }
-    file.close
+    pgn = Pgn.new
+    pgn.save(@log)
   end
 
   private
