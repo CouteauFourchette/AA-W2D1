@@ -47,6 +47,10 @@ class History
     end
   end
 
+  def promotion(end_piece)
+    @log[0] += "=#{end_piece}"
+  end
+
   def check?(piece, board)
     ennemy_color = piece.color == :white ? :black : :white
     board.in_check?(ennemy_color)

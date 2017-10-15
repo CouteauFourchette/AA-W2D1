@@ -8,6 +8,9 @@ class Pawn < Piece
   end
 
   def position=(pos)
+    promotion = @color == :black ? 0 : 7
+    puts pos.inspect
+    raise PromotionException if pos[0] == promotion
     @moved = true
     @position = pos
   end
@@ -39,4 +42,7 @@ class Pawn < Piece
   def to_s
     @color == :white ? '♙' : '♟'
   end
+end
+
+class PromotionException < StandardError
 end

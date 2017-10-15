@@ -62,8 +62,16 @@ class Board
       self[end_pos] = NullPiece.instance
       self[rook_pos] = old_piece.dup
       old_piece.position = rook_pos
+    rescue PromotionException
+      self[end_pos] = Queen.new(self, end_pos)
+      self[end_pos].color = start_piece.color
+      if attack
+        @history.takes(start_piece, end_pos, initial_board, self)
+      else
+        @history.moves(start_piece, end_pos, initial_board, self)
+      end
+      @history.promotion(self[end_pos])
     else
-
       if attack
         @history.takes(start_piece, end_pos, initial_board, self)
       else
