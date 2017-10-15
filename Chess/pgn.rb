@@ -1,8 +1,18 @@
 class Pgn
-  def initialize
+  def initialize(filename = nil, white = '?', black = '?')
     time = Time.new
     format_time = time.strftime("%Y-%m-%d-%H:%M:%S")
-    @filename = "games/#{format_time}.pgn"
+    filename ||= "games/#{format_time}.pgn"
+    @filename = filename
+    @information = {
+      result: '*',
+      date: time.strftime("%Y.%m.%d"),
+      round: '1',
+      event: '?',
+      black: black,
+      site: 'Earth',
+      white: white
+    }
   end
 
   def save(log)
@@ -17,19 +27,28 @@ class Pgn
       pgn_lines << line
     end
     file = File.open(@filename, 'w')
-    file.puts('[Result "*"]')
-    file.puts('[Date "2017.10.14"]')
-    file.puts('[Round "1"]')
-    file.puts('[Event "?"]')
-    file.puts('[Black "?"]')
-    file.puts('[Site "Earth"]')
-    file.puts('[White "?"]')
+    @information.each do |key, value|
+      file.puts("[#{key.capitalize} \"#{value}\"]")
+    end
     file.puts
     pgn_lines.reverse.each { |pgn| file.puts(pgn) }
     file.close
+    puts "Game saved at #{@filename}"
   end
 
   def load
-    
+    lines = File.readlines(@filename)
+    lines.each do |line|
+      if line =~ /\[*\]/ #information
+        key, value = line.split
+        key = key[1..-1].downcase.to_sym
+        @information[key] = value[1...-2]
+      else # moves
+        line = line.gsub /([0-9]+\.)/, ' ' #remove line number
+        puts line.split
+      end
+    end
+    puts @information
+
   end
 end
