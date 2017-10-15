@@ -5,11 +5,11 @@ class Piece
   attr_accessor :color, :position
   attr_writer :board
 
-  def initialize(board = nil, position = nil)
+  def initialize(board = nil, position = nil, color = nil)
     @board = board
     @position = position
     @symbol = :empty
-    @color = nil
+    @color = color
   end
 
   def valid_moves

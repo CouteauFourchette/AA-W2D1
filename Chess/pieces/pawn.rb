@@ -8,7 +8,7 @@ class Pawn < Piece
   end
 
   def position=(pos)
-    promotion = @color == :black ? 0 : 7
+    promotion = @color == :white ? 0 : 7
     puts pos.inspect
     raise PromotionException if pos[0] == promotion
     @moved = true
@@ -22,7 +22,7 @@ class Pawn < Piece
     positions = []
     moves.each do |move|
       x, y = move
-      x = -x if @color == :black
+      x = -x if @color == :white
       new_pos = [@position[0] + x, @position[1] + y]
       break if !@board.inside_board?(new_pos) || !@board[new_pos].empty?
       positions << new_pos
@@ -30,7 +30,7 @@ class Pawn < Piece
 
     attacks.each do |attack|
       x, y = attack
-      x = -x if @color == :black
+      x = -x if @color == :white
       new_pos = [@position[0] + x, @position[1] + y]
       if @board.inside_board?(new_pos) && !@board[new_pos].empty? && @board[new_pos].color != @color
         positions << new_pos

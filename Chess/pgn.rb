@@ -24,7 +24,7 @@ class Pgn
     log.each do |line|
       symbols.each do |key, val|
         if line.include?(key)
-          line = line.gsub(key, val)
+          line = line.gsub(/#{key} */, val)
         end
       end
       pgn_lines << line

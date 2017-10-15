@@ -2,13 +2,15 @@ require_relative 'human_player'
 require_relative 'display'
 require_relative 'board'
 require_relative 'pgn'
+require_relative 'fen'
 
 class Game
   def initialize(name1, name2)
-    @board = Board.create_new_board
+    fen = Fen.new
+    @board = fen.parse
     @cursor = Cursor.new([6,4], @board)
-    @player2 = HumanPlayer.new(name1, :white, @cursor)
-    @player1 = HumanPlayer.new(name2, :black, @cursor)
+    @player2 = HumanPlayer.new(name1, :black, @cursor)
+    @player1 = HumanPlayer.new(name2, :white, @cursor)
     @current_player = @player1
     @display = Display.new(@board, @cursor)
   end
@@ -53,7 +55,8 @@ class Game
 end
 
 if __FILE__ == $PROGRAM_NAME
-  game = Game.load_from_file('games/random_game.pgn')
-  # game = Game.new('Player1', 'Player2')
+
+  # game = Game.load_from_file('games/2017-10-15-14:53:01.pgn')
+  game = Game.new('Player1', 'Player2')
   game.play
 end
