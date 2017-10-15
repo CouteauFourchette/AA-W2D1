@@ -1,4 +1,5 @@
 require 'singleton'
+require_relative 'pgn'
 
 class History
   include Singleton
@@ -9,16 +10,6 @@ class History
   def initialize()
     @log = []
     @line_count = 1
-  end
-
-  def add(item)
-    if @log[0] && @log[0].length < 10
-      @log[0] += ' ' + item
-    else
-      @log.unshift("#{@line_count}.#{item}")
-      @line_count += 1
-    end
-    print_as_PGN
   end
 
   def takes(piece, end_pos, begin_board, end_board)
@@ -87,18 +78,19 @@ class History
     @log[item]
   end
 
-  def print_as_PGN
-    pgn_lines = []
-    symbols = { '♔ '=> 'K', '♚ '=> 'K', '♗ '=> 'B', '♝ '=> 'B', '♘ '=> 'N', '♞ '=> 'N', '♙ '=> ' ', '♟ '=> ' ', '♕ '=> 'Q', '♛ '=> 'Q', '♖ '=> 'R', '♜ '=> 'R' }
-    @log.each do |line|
-      symbols.each do |key, val|
-        if line.include?(key)
-          line = line.sub(key, val)
-        end
-      end
-      pgn_lines << line
+  def save_as_PGN
+    pgn = Pgn.new
+    pgn.save(@log)
+  end
+
+  private
+  def add(item)
+    if @log[0] && @log[0].length < 10
+      @log[0] += ' ' + item
+    else
+      @log.unshift("#{@line_count}.#{item}")
+      @line_count += 1
     end
-    puts pgn_lines.reverse
   end
 
 end

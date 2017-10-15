@@ -1,6 +1,7 @@
 require_relative 'human_player'
 require_relative 'display'
 require_relative 'board'
+require_relative 'pgn'
 
 class Game
   def initialize(name1, name2)
@@ -22,6 +23,7 @@ class Game
     until @board.checkmate?(@current_player.color)
       play_turn
     end
+    @history.save_as_PGN
     puts "WINNNER IS #{@current_player.name}"
   end
 
@@ -43,9 +45,15 @@ class Game
     end
   end
 
+  def self.load_from_file(filename)
+    pgn = Pgn.new(filename, 'Player1', 'Player2')
+    pgn.load
+    # Game.new('Player1', 'Player2')
+  end
 end
 
 if __FILE__ == $PROGRAM_NAME
+  # game = Game.load_from_file('games/test_stockfish.pgn')
   game = Game.new('Player1', 'Player2')
   game.play
 end
