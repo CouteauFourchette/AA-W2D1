@@ -1,4 +1,5 @@
 require "io/console"
+require_relative 'history'
 
 KEYMAP = {
   " " => :space,
@@ -110,6 +111,7 @@ class Cursor
       update_pos(MOVES[key])
       nil
     when key == :ctrl_c
+      History.instance.save_as_PGN
       Process.exit(0)
     end
   end

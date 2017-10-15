@@ -22,6 +22,7 @@ class Game
     until @board.checkmate?(@current_player.color)
       play_turn
     end
+    @history.save_as_PGN
     puts "WINNNER IS #{@current_player.name}"
   end
 

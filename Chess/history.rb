@@ -1,4 +1,5 @@
 require 'singleton'
+require 'Date'
 
 class History
   include Singleton
@@ -9,16 +10,6 @@ class History
   def initialize()
     @log = []
     @line_count = 1
-  end
-
-  def add(item)
-    if @log[0] && @log[0].length < 10
-      @log[0] += ' ' + item
-    else
-      @log.unshift("#{@line_count}.#{item}")
-      @line_count += 1
-    end
-    print_as_PGN
   end
 
   def takes(piece, end_pos, begin_board, end_board)
@@ -83,7 +74,7 @@ class History
     @log[item]
   end
 
-  def print_as_PGN
+  def save_as_PGN
     pgn_lines = []
     symbols = { '♔ '=> 'K', '♚ '=> 'K', '♗ '=> 'B', '♝ '=> 'B', '♘ '=> 'N', '♞ '=> 'N', '♙ '=> ' ', '♟ '=> ' ', '♕ '=> 'Q', '♛ '=> 'Q', '♖ '=> 'R', '♜ '=> 'R' }
     @log.each do |line|
@@ -94,7 +85,27 @@ class History
       end
       pgn_lines << line
     end
-    puts pgn_lines.reverse
+    file = File.open("games/#{Date.today}-#{Date.today.ctime}.pgn", 'w')
+    file.puts('[Result "*"]')
+    file.puts('[Date "2017.10.14"]')
+    file.puts('[Round "1"]')
+    file.puts('[Event "?"]')
+    file.puts('[Black "?"]')
+    file.puts('[Site "Earth"]')
+    file.puts('[White "?"]')
+    file.puts
+    pgn_lines.reverse.each { |pgn| file.puts(pgn) }
+    file.close
+  end
+
+  private
+  def add(item)
+    if @log[0] && @log[0].length < 10
+      @log[0] += ' ' + item
+    else
+      @log.unshift("#{@line_count}.#{item}")
+      @line_count += 1
+    end
   end
 
 end
