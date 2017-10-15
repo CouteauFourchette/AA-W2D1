@@ -1,5 +1,5 @@
 require_relative 'pieces'
-require_relative 'History'
+require_relative 'history'
 
 class Board
   attr_reader :grid
@@ -61,7 +61,7 @@ class Board
       self[king_pos].position = king_pos
       self[end_pos] = NullPiece.instance
       self[rook_pos] = old_piece.dup
-      old_piece.position = rook_pos
+      self[rook_pos].position = rook_pos
     else
 
       if attack
