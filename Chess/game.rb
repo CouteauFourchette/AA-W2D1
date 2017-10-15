@@ -35,7 +35,7 @@ class Game
     if pos != nil && !@cursor.selected.empty?
       piece = @board.move_piece(@cursor.selected, pos)
       @cursor.selected = []
-      # switch_player
+      switch_player
       @display.render
     elsif pos!=nil && @board[pos].color == @current_player.color && @cursor.selected.empty?
       @cursor.selected = pos
@@ -53,7 +53,7 @@ class Game
 end
 
 if __FILE__ == $PROGRAM_NAME
-  # game = Game.load_from_file('games/test_stockfish.pgn')
-  game = Game.new('Player1', 'Player2')
+  game = Game.load_from_file('games/random_game.pgn')
+  # game = Game.new('Player1', 'Player2')
   game.play
 end

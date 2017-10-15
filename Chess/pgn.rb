@@ -20,11 +20,11 @@ class Pgn
 
   def save(log)
     pgn_lines = []
-    symbols = { '♔ '=> 'K', '♚ '=> 'K', '♗ '=> 'B', '♝ '=> 'B', '♘ '=> 'N', '♞ '=> 'N', '♙ '=> ' ', '♟ '=> ' ', '♕ '=> 'Q', '♛ '=> 'Q', '♖ '=> 'R', '♜ '=> 'R' }
+    symbols = { '♔'=> 'K', '♚'=> 'K', '♗'=> 'B', '♝'=> 'B', '♘'=> 'N', '♞'=> 'N', '♙'=> '', '♟'=> '', '♕'=> 'Q', '♛'=> 'Q', '♖'=> 'R', '♜'=> 'R' }
     log.each do |line|
       symbols.each do |key, val|
         if line.include?(key)
-          line = line.sub(key, val)
+          line = line.gsub(key, val)
         end
       end
       pgn_lines << line
@@ -72,12 +72,12 @@ class Pgn
 
   private
   def play_move(board, move, color)
-
     move = move.sub('x', '')
     move = move.sub('+', '')
     end_pos = move.scan /[a-z][0-9]\z/
+    move = move.gsub /[a-z][0-9]\z/, ''
     piece = move.scan /.*[A-Z]/
-
+    move = move.gsub /.*[A-Z]/, ''
     pos = get_pos(end_pos[0])
     symbol = get_symbol(piece[0])
 
@@ -87,7 +87,19 @@ class Pgn
       piece.color == color &&
       piece.valid_moves.include?(pos)
     end
+    if pieces.length > 1
+      rank_notation = ['8','7','6','5','4','3','2','1']
+      file_notation = ['a','b','c','d','e','f','g','h']
 
+
+      pieces = pieces.select do |piece|
+        file = move.scan /[a-z]/
+        rank = move.scan /[0-9]/
+        file = file.empty? ? piece.position[1] : file_notation.index(file[0])
+        rank = rank.empty? ? piece.position[0] : rank_notation.index(rank[0])
+        piece.position == [rank, file]
+      end
+    end
     board.move_piece(pieces[0].position, pos)
   end
 
