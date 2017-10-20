@@ -9,7 +9,6 @@ class Pawn < Piece
 
   def position=(pos)
     promotion = @color == :white ? 0 : 7
-    puts pos.inspect
     raise PromotionException if pos[0] == promotion
     @moved = true
     @position = pos

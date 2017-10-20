@@ -44,7 +44,7 @@ class Fen
       i += 1
       grid << line
     end
-    # puts grid[6].count
+
     board.grid = grid
 
     next_player = splited_fen[1] == 'w' ? :white : :black
