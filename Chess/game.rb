@@ -5,13 +5,12 @@ require_relative 'pgn'
 require_relative 'fen'
 
 class Game
-  def initialize(name1, name2)
-    fen = Fen.new
-    @board = fen.parse
+  def initialize(name1, name2, board, current_player = :white)
+    @board = board
     @cursor = Cursor.new([6,4], @board)
-    @player2 = HumanPlayer.new(name1, :black, @cursor)
-    @player1 = HumanPlayer.new(name2, :white, @cursor)
-    @current_player = @player1
+    @player1 = HumanPlayer.new(name1, :white, @cursor)
+    @player2 = HumanPlayer.new(name2, :black, @cursor)
+    @current_player = current_player == :white ? @player1 : @player2
     @display = Display.new(@board, @cursor)
   end
 
@@ -52,11 +51,4 @@ class Game
     pgn.load
     # Game.new('Player1', 'Player2')
   end
-end
-
-if __FILE__ == $PROGRAM_NAME
-
-  # game = Game.load_from_file('games/2017-10-15-14:53:01.pgn')
-  game = Game.new('Player1', 'Player2')
-  game.play
 end

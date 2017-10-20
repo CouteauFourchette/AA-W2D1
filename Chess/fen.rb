@@ -4,13 +4,14 @@ require_relative 'board'
 class Fen
   def initialize(fen_string = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1')
     @fen_string = fen_string
-    @fen_string = '7k/p1r2b2/5q2/1p1p1pR1/5P2/P7/1P2Q2P/1K4R1 w - - 62 32'
   end
 
   def parse
     board = Board.new
+
     splited_fen = @fen_string.split(' ')
     pieces = splited_fen[0]
+
     rows = pieces.split('/')
     i = 0
     grid = []
@@ -19,6 +20,7 @@ class Fen
       j = 0
       r.each_char do |e|
         color = e.downcase == e ? :black : :white
+
         case e.downcase
         when 'p'
           line << Pawn.new(board, [i,j], color)
@@ -42,8 +44,12 @@ class Fen
       i += 1
       grid << line
     end
+    # puts grid[6].count
     board.grid = grid
-    board
+
+    next_player = splited_fen[1] == 'w' ? :white : :black
+
+    [board, next_player]
   end
 end
 

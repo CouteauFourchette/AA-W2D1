@@ -1,5 +1,6 @@
 require_relative 'board'
 require_relative 'display'
+require_relative 'fen'
 
 class Pgn
   def initialize(filename = nil, white = '?', black = '?')
@@ -43,31 +44,45 @@ class Pgn
     lines = File.readlines(@filename)
     moves = []
     lines.each do |line|
-      if line =~ /\[*\]/ #information
+      if line =~ /\[.*\]/ #information
+
         key, value = line.split
+        value = line.scan(/\".*\"/)[0]
         key = key[1..-1].downcase.to_sym
-        @information[key] = value[1...-2]
+        @information[key] = value[1...-1]
+
       else # moves
-        line = line.gsub /([0-9]+\.)/, ' ' #remove line number
+        line = line.gsub /([0-9]+\.+)/, ' ' #remove line number
         moves += line.split
       end
     end
-    puts @information
-    puts moves.inspect
-    board = Board.create_new_board
+
+    fen = @information[:fen] ? Fen.new(@information[:fen]) : fen = Fen.new
+
+    board, next_player = fen.parse
+
     cursor = Cursor.new([6,4], board)
     display = Display.new(board, cursor)
+    display.render
 
-    color = :white
+    color = next_player
+
     moves.each do |move|
-      color = color == :white ? :black : :white
       if move == 'O-O' || move == 'O-O-O'
         castle(board, move, color)
+      elsif move == '1-0' || move == '1/2-1/2' || move == '0-1'
+        return ['someone_won', move]
+      elsif move == "*"
+        break
       else
         play_move(board, move, color)
       end
+      sleep(0.4)
       display.render
+      color = color == :white ? :black : :white
     end
+
+    [board, color]
   end
 
   private
@@ -87,11 +102,10 @@ class Pgn
       piece.color == color &&
       piece.valid_moves.include?(pos)
     end
+
     if pieces.length > 1
       rank_notation = ['8','7','6','5','4','3','2','1']
       file_notation = ['a','b','c','d','e','f','g','h']
-
-
       pieces = pieces.select do |piece|
         file = move.scan /[a-z]/
         rank = move.scan /[0-9]/
@@ -114,7 +128,6 @@ class Pgn
   end
 
   def get_symbol(letter)
-    puts letter.inspect
     return :pawn if !letter
     pieces = {'N'=> :knight, 'Q'=> :queen, 'B'=> :bishop, 'K' => :king, 'R'=> :rook}
     pieces[letter]
@@ -124,7 +137,6 @@ class Pgn
     row_notation = [8,7,6,5,4,3,2,1]
     column_notation = ['a','b','c','d','e','f','g','h']
     file, rank = notation.split('')
-    puts "[#{row_notation.index(rank.to_i)}, #{column_notation.index(file)}]"
     [row_notation.index(rank.to_i), column_notation.index(file)]
   end
 end
